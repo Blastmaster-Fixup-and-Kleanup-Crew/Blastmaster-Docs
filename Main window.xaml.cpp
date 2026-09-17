@@ -147,4 +147,12 @@ namespace winrt::WinUI3TextEditor::implementation
 
         StatusText().Text(L"Format Option Selected: " + action);
     }
+
+    void MainWindow::OnToolsItemClick(IInspectable const& sender, RoutedEventArgs const&)
+    {
+        auto item = sender.as<MenuFlyoutItem>();
+        hstring action = item.Text();
+
+        StatusText().Text(L"Tools Action: " + action);
+    }
 }
