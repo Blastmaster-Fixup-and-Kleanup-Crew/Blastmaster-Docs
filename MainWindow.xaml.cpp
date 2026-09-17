@@ -192,4 +192,12 @@ namespace winrt::WinUI3TextEditor::implementation
 
         StatusText().Text(L"Switched to Document: " + docName);
     }
+
+    void MainWindow::OnHelpItemClick(IInspectable const& sender, RoutedEventArgs const&)
+    {
+        auto item = sender.as<MenuFlyoutItem>();
+        hstring action = item.Text();
+
+        StatusText().Text(L"Help Action: " + action);
+    }
 }
