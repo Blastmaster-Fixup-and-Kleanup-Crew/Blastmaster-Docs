@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Document xmlns="http://schemas.dccx.org/2026/document" Type="Document" Version="1.0">
+  <Properties>
+    <Title>Sample Document</Title>
+    <Author>Jane Doe</Author>
+    <Created>2026-09-17T10:00:00Z</Created>
+    <Modified>2026-09-17T10:05:00Z</Modified>
+  </Properties>
+  <PageSetup Size="Letter" Orientation="Portrait">
+    <Margins Top="1.0" Bottom="1.0" Left="1.0" Right="1.0"/>
+  </PageSetup>
+  <Body>
+    <!-- Simple Paragraph Content or Rich-Text RTF Encapsulation -->
+    <RtfContent><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 Arial;}}\f0\fs24\b Welcome to .dccx Format!\b0}]]></RtfContent>
+  </Body>
+</Document>
