@@ -83,10 +83,12 @@ namespace winrt::WinUI3TextEditor::implementation
         bool isStandardOn = StandardToolbarToggle().IsChecked();
         bool isFormattingOn = FormattingToolbarToggle().IsChecked();
         bool isDrawingOn = DrawingToolbarToggle().IsChecked();
+        bool isFormsOn = FormsToolbarToggle().IsChecked();
 
         StandardToolbar().Visibility(isStandardOn ? Visibility::Visible : Visibility::Collapsed);
         FormattingToolbar().Visibility(isFormattingOn ? Visibility::Visible : Visibility::Collapsed);
         DrawingToolbar().Visibility(isDrawingOn ? Visibility::Visible : Visibility::Collapsed);
+        FormsSidebar().Visibility(isFormsOn ? Visibility::Visible : Visibility::Collapsed);
 
         DrawingToolbarButton().IsChecked(isDrawingOn);
     }
@@ -319,5 +321,24 @@ namespace winrt::WinUI3TextEditor::implementation
                 StatusText().Text(L"Formatting " + category + L" set to: " + val);
             }
         }
+    }
+
+    void MainWindow::OnFormsToolbarButtonClick(IInspectable const& sender, RoutedEventArgs const&)
+    {
+        hstring tag = L"";
+
+        if (auto btn = sender.try_as<Button>())
+        {
+            tag = unbox_value<hstring>(btn.Tag());
+        }
+        else if (auto toggleBtn = sender.try_as<ToggleButton>())
+        {
+            tag = unbox_value<hstring>(toggleBtn.Tag());
+            bool state = toggleBtn.IsChecked().Value();
+            StatusText().Text(L"Forms Command: " + tag + (state ? L" [Active]" : L" [Inactive]"));
+            return;
+        }
+
+        StatusText().Text(L"Forms Command Executed: " + tag);
     }
 }
