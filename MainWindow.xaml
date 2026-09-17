@@ -132,6 +132,36 @@
                 <MenuFlyoutItem Text="Picture..." Click="OnInsertItemClick"/>
                 <MenuFlyoutItem Text="Object..." Click="OnInsertItemClick"/>
             </MenuBarItem>
+
+            <!-- FORMAT MENU -->
+            <MenuBarItem Title="Format">
+                <MenuFlyoutItem Text="Font..." Click="OnFormatItemClick"/>
+                <MenuFlyoutItem Text="Paragraph..." Click="OnFormatItemClick"/>
+                <MenuFlyoutItem Text="Tabs..." Click="OnFormatItemClick"/>
+                <MenuFlyoutItem Text="Borders and Shading..." Click="OnFormatItemClick"/>
+
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="Columns..." Click="OnFormatItemClick"/>
+                <MenuFlyoutItem Text="Change Case..." Click="OnFormatItemClick"/>
+                <MenuFlyoutItem Text="Drop Cap..." Click="OnFormatItemClick"/>
+
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="Bullets and Numbering..." Click="OnFormatItemClick"/>
+                <MenuFlyoutItem Text="Heading Numbering..." Click="OnFormatItemClick"/>
+
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="AutoFormat..." Click="OnFormatItemClick"/>
+                <MenuFlyoutItem Text="Style Gallery..." Click="OnFormatItemClick"/>
+                <MenuFlyoutItem Text="Style..." Click="OnFormatItemClick"/>
+
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="Frame..." Click="OnFormatItemClick"/>
+                <MenuFlyoutItem Text="Drawing Object..." Click="OnFormatItemClick"/>
+            </MenuBarItem>
         </MenuBar>
 
         <!-- Toolbars Container -->
