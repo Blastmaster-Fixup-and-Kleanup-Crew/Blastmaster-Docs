@@ -89,6 +89,7 @@
                     <ToggleMenuFlyoutItem x:Name="StandardToolbarToggle" Text="Standard" IsChecked="True" Click="OnToggleToolbarClick"/>
                     <ToggleMenuFlyoutItem x:Name="FormattingToolbarToggle" Text="Formatting" IsChecked="True" Click="OnToggleToolbarClick"/>
                     <ToggleMenuFlyoutItem x:Name="DrawingToolbarToggle" Text="Drawing" IsChecked="True" Click="OnToggleToolbarClick"/>
+                    <ToggleMenuFlyoutItem x:Name="FormsToolbarToggle" Text="Forms" IsChecked="True" Click="OnToggleToolbarClick"/>
                 </MenuFlyoutSubItem>
                 <ToggleMenuFlyoutItem x:Name="RulerToggle" Text="Ruler" IsChecked="True" Click="OnToggleRulerClick"/>
 
@@ -476,20 +477,134 @@
             </ScrollViewer>
         </StackPanel>
 
-        <!-- Main Workspace Area -->
+        <!-- Main Workspace Area with Right Sidebar -->
         <Grid Grid.Row="2">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-            <!-- Ruler Component -->
-            <Border x:Name="RulerBar" Grid.Row="0" Background="{ThemeResource SystemControlBackgroundBaseLowBrush}" Height="20" Padding="10,0">
-                <TextBlock Text="[--- Ruler ---]" VerticalAlignment="Center" FontSize="10" Foreground="Gray"/>
+            <!-- Document Canvas & Ruler Area -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Ruler Component -->
+                <Border x:Name="RulerBar" Grid.Row="0" Background="{ThemeResource SystemControlBackgroundBaseLowBrush}" Height="20" Padding="10,0">
+                    <TextBlock Text="[--- Ruler ---]" VerticalAlignment="Center" FontSize="10" Foreground="Gray"/>
+                </Border>
+
+                <!-- Document Text Canvas -->
+                <TextBox x:Name="EditorBox" Grid.Row="1" AcceptsReturn="True" TextWrapping="Wrap" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="10" PlaceholderText="Type your document here..."/>
+            </Grid>
+
+            <!-- RIGHT SIDEBAR: FORMS TOOLBAR -->
+            <Border x:Name="FormsSidebar"
+                    Grid.Column="1"
+                    Width="280"
+                    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                    BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+                    BorderThickness="1,0,0,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Padding="12" Spacing="8">
+                        <TextBlock Text="Forms Toolbar" Style="{StaticResource SubtitleTextBlockStyle}" Margin="0,0,0,8"/>
+
+                        <!-- Text Form Field -->
+                        <Button Click="OnFormsToolbarButtonClick" Tag="Text Form Field" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE8C8;"/>
+                                <StackPanel>
+                                    <TextBlock Text="Text Form Field" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                    <TextBlock Text="Insert text, date, or number box" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Check Box Form Field -->
+                        <Button Click="OnFormsToolbarButtonClick" Tag="Check Box Form Field" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE73A;"/>
+                                <StackPanel>
+                                    <TextBlock Text="Check Box Form Field" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                    <TextBlock Text="Insert clickable checkbox (✓)" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Drop-Down Form Field -->
+                        <Button Click="OnFormsToolbarButtonClick" Tag="Drop-Down Form Field" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE70D;"/>
+                                <StackPanel>
+                                    <TextBlock Text="Drop-Down Form Field" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                    <TextBlock Text="Insert choice selection list" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Form Field Options -->
+                        <Button Click="OnFormsToolbarButtonClick" Tag="Form Field Options" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE713;"/>
+                                <StackPanel>
+                                    <TextBlock Text="Form Field Options" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                    <TextBlock Text="Configure field rules and options" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+
+                        <MenuFlyoutSeparator Margin="0,4"/>
+
+                        <!-- Insert Table -->
+                        <Button Click="OnFormsToolbarButtonClick" Tag="Insert Table" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xF0E2;"/>
+                                <StackPanel>
+                                    <TextBlock Text="Insert Table" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                    <TextBlock Text="Align text fields neatly in a grid" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Insert Frame -->
+                        <Button Click="OnFormsToolbarButtonClick" Tag="Insert Frame" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE7A8;"/>
+                                <StackPanel>
+                                    <TextBlock Text="Insert Frame" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                    <TextBlock Text="Lock element into exact page position" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+
+                        <MenuFlyoutSeparator Margin="0,4"/>
+
+                        <!-- Form Field Shading -->
+                        <ToggleButton Click="OnFormsToolbarButtonClick" Tag="Form Field Shading" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE771;"/>
+                                <StackPanel>
+                                    <TextBlock Text="Form Field Shading" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                    <TextBlock Text="Toggle light gray tint on fillable boxes" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </ToggleButton>
+
+                        <!-- Protect Form -->
+                        <ToggleButton Click="OnFormsToolbarButtonClick" Tag="Protect Form" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE72E;"/>
+                                <StackPanel>
+                                    <TextBlock Text="Protect Form" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                    <TextBlock Text="Lock document to fillable boxes only" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </ToggleButton>
+                    </StackPanel>
+                </ScrollViewer>
             </Border>
-
-            <!-- Document Text Canvas -->
-            <TextBox x:Name="EditorBox" Grid.Row="1" AcceptsReturn="True" TextWrapping="Wrap" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="10" PlaceholderText="Type your document here..."/>
         </Grid>
 
         <!-- DRAWING TOOLBAR (Bottom Workspace Dock) -->
@@ -555,6 +670,7 @@
                 <Button ToolTipService.ToolTip="Bring to Front" Click="OnDrawingToolbarButtonClick" Tag="Bring to Front">
                     <FontIcon Glyph="&#xE898;"/>
                 </Button>
+
                 <Button ToolTipService.ToolTip="Send to Back" Click="OnDrawingToolbarButtonClick" Tag="Send to Back">
                     <FontIcon Glyph="&#xE899;"/>
                 </Button>
