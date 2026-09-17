@@ -15,6 +15,7 @@
 
         <!-- Top Menu Bar -->
         <MenuBar Grid.Row="0">
+            <!-- File Menu -->
             <MenuBarItem Title="File">
                 <MenuFlyoutItem Text="New Document" Click="New_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
@@ -54,6 +55,64 @@
                 <MenuFlyoutSeparator/>
                 <MenuFlyoutItem Text="Exit" Click="Exit_Click"/>
             </MenuBarItem>
+
+            <!-- Edit Menu -->
+            <MenuBarItem Title="Edit">
+                <MenuFlyoutItem Text="Undo" Click="Undo_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="Z" Modifiers="Control"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Redo" Click="Redo_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="Y" Modifiers="Control"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutSeparator/>
+                <MenuFlyoutItem Text="Cut" Click="Cut_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="X" Modifiers="Control"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Copy" Click="Copy_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="C" Modifiers="Control"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Paste" Click="Paste_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="V" Modifiers="Control"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Paste Special..." Click="PasteSpecial_Click"/>
+                <MenuFlyoutItem Text="Clear" Click="Clear_Click"/>
+                <MenuFlyoutItem Text="Select All" Click="SelectAll_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="A" Modifiers="Control"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutSeparator/>
+                <MenuFlyoutItem Text="Find..." Click="Find_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="F" Modifiers="Control"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Replace..." Click="Replace_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="H" Modifiers="Control"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Go To..." Click="GoTo_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="G" Modifiers="Control"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutSeparator/>
+                <MenuFlyoutItem Text="AutoText..." Click="AutoText_Click"/>
+                <MenuFlyoutItem Text="Bookmark..." Click="Bookmark_Click"/>
+                <MenuFlyoutItem Text="Links..." Click="Links_Click"/>
+                <MenuFlyoutItem Text="Object..." Click="Object_Click"/>
+            </MenuBarItem>
         </MenuBar>
 
         <!-- Formatting Toolbar -->
@@ -66,7 +125,7 @@
             <AppBarButton Icon="FontDecrease" Label="Decrease Size" Click="FontSizeDecrease_Click"/>
         </CommandBar>
 
-        <!-- Main Editor -->
+        <!-- Main Document Area -->
         <RichEditBox x:Name="Editor" 
                      Grid.Row="2" 
                      Margin="10" 
