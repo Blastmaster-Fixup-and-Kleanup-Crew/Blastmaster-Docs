@@ -200,6 +200,41 @@
                 <MenuFlyoutItem Text="Customize..." Click="OnToolsItemClick"/>
                 <MenuFlyoutItem Text="Options..." Click="OnToolsItemClick"/>
             </MenuBarItem>
+
+            <!-- TABLE MENU -->
+            <MenuBarItem Title="Table">
+                <MenuFlyoutItem Text="Insert Rows" Click="OnTableItemClick"/>
+                <MenuFlyoutItem Text="Insert Columns" Click="OnTableItemClick"/>
+                <MenuFlyoutItem Text="Delete Rows" Click="OnTableItemClick"/>
+                <MenuFlyoutItem Text="Delete Columns" Click="OnTableItemClick"/>
+
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="Merge Cells" Click="OnTableItemClick"/>
+                <MenuFlyoutItem Text="Split Cells..." Click="OnTableItemClick"/>
+
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="Select Row" Click="OnTableItemClick"/>
+                <MenuFlyoutItem Text="Select Column" Click="OnTableItemClick"/>
+                <MenuFlyoutItem Text="Select Table" Click="OnTableItemClick"/>
+
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="Table AutoFormat..." Click="OnTableItemClick"/>
+                <MenuFlyoutItem Text="Cell Height and Width..." Click="OnTableItemClick"/>
+
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="Headings" Click="OnTableItemClick"/>
+                <MenuFlyoutItem Text="Convert Text to Table..." Click="OnTableItemClick"/>
+                <MenuFlyoutItem Text="Sort..." Click="OnTableItemClick"/>
+                <MenuFlyoutItem Text="Formula..." Click="OnTableItemClick"/>
+
+                <MenuFlyoutSeparator/>
+
+                <ToggleMenuFlyoutItem x:Name="GridlinesToggle" Text="Gridlines" IsChecked="True" Click="OnToggleGridlinesClick"/>
+            </MenuBarItem>
         </MenuBar>
 
         <!-- Toolbars Container -->
