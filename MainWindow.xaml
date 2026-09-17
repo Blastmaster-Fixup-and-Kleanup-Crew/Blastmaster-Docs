@@ -88,6 +88,7 @@
                 <MenuFlyoutSubItem Text="Toolbars">
                     <ToggleMenuFlyoutItem x:Name="StandardToolbarToggle" Text="Standard" IsChecked="True" Click="OnToggleToolbarClick"/>
                     <ToggleMenuFlyoutItem x:Name="FormattingToolbarToggle" Text="Formatting" IsChecked="True" Click="OnToggleToolbarClick"/>
+                    <ToggleMenuFlyoutItem x:Name="BordersToolbarToggle" Text="Borders" IsChecked="True" Click="OnToggleToolbarClick"/>
                     <ToggleMenuFlyoutItem x:Name="DrawingToolbarToggle" Text="Drawing" IsChecked="True" Click="OnToggleToolbarClick"/>
                     <ToggleMenuFlyoutItem x:Name="FormsToolbarToggle" Text="Forms" IsChecked="True" Click="OnToggleToolbarClick"/>
                 </MenuFlyoutSubItem>
@@ -444,9 +445,10 @@
 
                     <AppBarSeparator/>
 
-                    <Button ToolTipService.ToolTip="Borders" Click="OnFormattingToolbarButtonClick" Tag="Borders">
-                        <FontIcon Glyph="&#xE80A;"/>
-                    </Button>
+                    <!-- Borders Button on Formatting Toolbar -->
+                    <ToggleButton x:Name="BordersToolbarButton" ToolTipService.ToolTip="Borders Toolbar" IsChecked="True" Click="OnFormattingToolbarButtonClick" Tag="Borders Toolbar">
+                        <FontIcon Glyph="&#xF0E2;"/>
+                    </ToggleButton>
 
                     <DropDownButton ToolTipService.ToolTip="Highlight Color">
                         <FontIcon Glyph="&#xE7E6;"/>
@@ -473,6 +475,87 @@
                             </MenuFlyout>
                         </DropDownButton.Flyout>
                     </DropDownButton>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- BORDERS TOOLBAR -->
+            <ScrollViewer x:Name="BordersToolbar" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Auto" Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}">
+                <StackPanel Orientation="Horizontal" Padding="4,2" Spacing="2">
+                    <!-- Line Style -->
+                    <ComboBox Width="120" SelectedIndex="0" SelectionChanged="OnBordersComboBoxChanged" ToolTipService.ToolTip="Line Style" VerticalAlignment="Center" Tag="Line Style">
+                        <ComboBoxItem Content="Single Solid"/>
+                        <ComboBoxItem Content="Double Solid"/>
+                        <ComboBoxItem Content="Dashed"/>
+                        <ComboBoxItem Content="Dotted"/>
+                        <ComboBoxItem Content="Triple Solid"/>
+                    </ComboBox>
+
+                    <!-- Line Weight -->
+                    <ComboBox Width="90" SelectedIndex="2" SelectionChanged="OnBordersComboBoxChanged" ToolTipService.ToolTip="Line Weight" VerticalAlignment="Center" Tag="Line Weight">
+                        <ComboBoxItem Content="1/4 pt"/>
+                        <ComboBoxItem Content="1/2 pt"/>
+                        <ComboBoxItem Content="3/4 pt"/>
+                        <ComboBoxItem Content="1 pt"/>
+                        <ComboBoxItem Content="1 1/2 pt"/>
+                        <ComboBoxItem Content="2 1/4 pt"/>
+                        <ComboBoxItem Content="3 pt"/>
+                        <ComboBoxItem Content="4 1/2 pt"/>
+                        <ComboBoxItem Content="6 pt"/>
+                    </ComboBox>
+
+                    <DropDownButton ToolTipService.ToolTip="Border Color">
+                        <FontIcon Glyph="&#xE76D;"/>
+                        <DropDownButton.Flyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="Automatic (Black)" Click="OnBordersToolbarButtonClick" Tag="Border Color: Black"/>
+                                <MenuFlyoutItem Text="Red" Click="OnBordersToolbarButtonClick" Tag="Border Color: Red"/>
+                                <MenuFlyoutItem Text="Blue" Click="OnBordersToolbarButtonClick" Tag="Border Color: Blue"/>
+                                <MenuFlyoutItem Text="Green" Click="OnBordersToolbarButtonClick" Tag="Border Color: Green"/>
+                                <MenuFlyoutItem Text="Gray" Click="OnBordersToolbarButtonClick" Tag="Border Color: Gray"/>
+                            </MenuFlyout>
+                        </DropDownButton.Flyout>
+                    </DropDownButton>
+
+                    <AppBarSeparator/>
+
+                    <!-- Borders Position Buttons -->
+                    <Button ToolTipService.ToolTip="Top Border" Click="OnBordersToolbarButtonClick" Tag="Top Border">
+                        <FontIcon Glyph="&#xE74A;"/>
+                    </Button>
+                    <Button ToolTipService.ToolTip="Bottom Border" Click="OnBordersToolbarButtonClick" Tag="Bottom Border">
+                        <FontIcon Glyph="&#xE74B;"/>
+                    </Button>
+                    <Button ToolTipService.ToolTip="Left Border" Click="OnBordersToolbarButtonClick" Tag="Left Border">
+                        <FontIcon Glyph="&#xE748;"/>
+                    </Button>
+                    <Button ToolTipService.ToolTip="Right Border" Click="OnBordersToolbarButtonClick" Tag="Right Border">
+                        <FontIcon Glyph="&#xE749;"/>
+                    </Button>
+
+                    <AppBarSeparator/>
+
+                    <Button ToolTipService.ToolTip="Inside Borders" Click="OnBordersToolbarButtonClick" Tag="Inside Borders">
+                        <FontIcon Glyph="&#xF0E2;"/>
+                    </Button>
+                    <Button ToolTipService.ToolTip="Outside Border" Click="OnBordersToolbarButtonClick" Tag="Outside Border">
+                        <FontIcon Glyph="&#xE751;"/>
+                    </Button>
+                    <Button ToolTipService.ToolTip="No Border" Click="OnBordersToolbarButtonClick" Tag="No Border">
+                        <FontIcon Glyph="&#xE894;"/>
+                    </Button>
+
+                    <AppBarSeparator/>
+
+                    <!-- Shading Dropdown -->
+                    <ComboBox Width="110" SelectedIndex="0" SelectionChanged="OnBordersComboBoxChanged" ToolTipService.ToolTip="Shading Background" VerticalAlignment="Center" Tag="Shading">
+                        <ComboBoxItem Content="No Fill"/>
+                        <ComboBoxItem Content="5% Gray"/>
+                        <ComboBoxItem Content="10% Gray"/>
+                        <ComboBoxItem Content="20% Gray"/>
+                        <ComboBoxItem Content="25% Gray"/>
+                        <ComboBoxItem Content="50% Gray"/>
+                        <ComboBoxItem Content="Solid Black"/>
+                    </ComboBox>
                 </StackPanel>
             </ScrollViewer>
         </StackPanel>
