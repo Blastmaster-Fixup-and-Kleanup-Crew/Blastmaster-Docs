@@ -13,5 +13,6 @@ namespace WinUI3TextEditor
         void OnOpenPaneClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
         void OnZoomClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
         void OnInsertItemClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
+        void OnFormatItemClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
     }
 }
