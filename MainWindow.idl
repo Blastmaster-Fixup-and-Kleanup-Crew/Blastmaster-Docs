@@ -1,0 +1,16 @@
+namespace WinUI3TextEditor
+{
+    [default_interface]
+    runtimeclass MainWindow : Microsoft.UI.Xaml.Window
+    {
+        MainWindow();
+        void OnFileItemClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
+        void OnEditItemClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
+        void OnViewModeClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
+        void OnToggleToolbarClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
+        void OnToggleRulerClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
+        void OnFullScreenToggle(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
+        void OnOpenPaneClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
+        void OnZoomClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
+    }
+}
