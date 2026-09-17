@@ -162,6 +162,44 @@
                 <MenuFlyoutItem Text="Frame..." Click="OnFormatItemClick"/>
                 <MenuFlyoutItem Text="Drawing Object..." Click="OnFormatItemClick"/>
             </MenuBarItem>
+
+            <!-- TOOLS MENU -->
+            <MenuBarItem Title="Tools">
+                <MenuFlyoutSubItem Text="Language">
+                    <MenuFlyoutItem Text="Spelling..." Click="OnToolsItemClick">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Key="F7"/>
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Grammar..." Click="OnToolsItemClick"/>
+                    <MenuFlyoutItem Text="Thesaurus..." Click="OnToolsItemClick"/>
+                    <MenuFlyoutItem Text="Hyphenation..." Click="OnToolsItemClick"/>
+                    <MenuFlyoutItem Text="Set Language..." Click="OnToolsItemClick"/>
+                </MenuFlyoutSubItem>
+
+                <MenuFlyoutItem Text="Word Count..." Click="OnToolsItemClick"/>
+                <MenuFlyoutItem Text="AutoCorrect..." Click="OnToolsItemClick"/>
+
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="Mail Merge..." Click="OnToolsItemClick"/>
+                <MenuFlyoutItem Text="Envelopes and Labels..." Click="OnToolsItemClick"/>
+
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="Protect Document..." Click="OnToolsItemClick"/>
+                <MenuFlyoutItem Text="Revision Marks..." Click="OnToolsItemClick"/>
+
+                <MenuFlyoutSubItem Text="Macro">
+                    <MenuFlyoutItem Text="Macros..." Click="OnToolsItemClick"/>
+                    <MenuFlyoutItem Text="Record New Macro..." Click="OnToolsItemClick"/>
+                </MenuFlyoutSubItem>
+
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="Customize..." Click="OnToolsItemClick"/>
+                <MenuFlyoutItem Text="Options..." Click="OnToolsItemClick"/>
+            </MenuBarItem>
         </MenuBar>
 
         <!-- Toolbars Container -->
