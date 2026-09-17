@@ -19,5 +19,6 @@ namespace WinUI3TextEditor
         void OnToggleGridlinesClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
         void OnWindowItemClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
         void OnSwitchDocumentClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
+        void OnHelpItemClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
     }
 }
