@@ -14,7 +14,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Menu Bar -->
+        <!-- Main Menu Bar -->
         <MenuBar Grid.Row="0">
             <!-- FILE MENU -->
             <MenuBarItem Title="File">
@@ -102,30 +102,30 @@
             </MenuBarItem>
         </MenuBar>
 
-        <!-- Toolbars Panel -->
+        <!-- Toolbars Container -->
         <StackPanel x:Name="ToolbarsPanel" Grid.Row="1" Orientation="Horizontal" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" Padding="8,4">
             <Button Content="Bold" Margin="0,0,4,0"/>
             <Button Content="Italic" Margin="0,0,4,0"/>
             <Button Content="Underline" Margin="0,0,4,0"/>
         </StackPanel>
 
-        <!-- Main Editor Area -->
+        <!-- Main Workspace Area -->
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Ruler Indicator -->
+            <!-- Ruler Component -->
             <Border x:Name="RulerBar" Grid.Row="0" Background="{ThemeResource SystemControlBackgroundBaseLowBrush}" Height="20" Padding="10,0">
-                <TextBlock Text="[--- Ruler Placeholder ---]" VerticalAlignment="Center" FontSize="10" Foreground="Gray"/>
+                <TextBlock Text="[--- Ruler ---]" VerticalAlignment="Center" FontSize="10" Foreground="Gray"/>
             </Border>
 
-            <!-- Text Editor Canvas -->
+            <!-- Document Text Canvas -->
             <TextBox x:Name="EditorBox" Grid.Row="1" AcceptsReturn="True" TextWrapping="Wrap" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="10" PlaceholderText="Type your document here..."/>
         </Grid>
 
-        <!-- Status Bar -->
+        <!-- Bottom Status Bar -->
         <Border Grid.Row="3" Background="{ThemeResource SystemControlBackgroundChromeLowBrush}" Padding="10,4">
             <TextBlock x:Name="StatusText" Text="Mode: Normal | Zoom: 100%" FontSize="12"/>
         </Border>
