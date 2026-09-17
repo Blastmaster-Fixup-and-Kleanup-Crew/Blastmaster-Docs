@@ -82,9 +82,13 @@ namespace winrt::WinUI3TextEditor::implementation
     {
         bool isStandardOn = StandardToolbarToggle().IsChecked();
         bool isFormattingOn = FormattingToolbarToggle().IsChecked();
+        bool isDrawingOn = DrawingToolbarToggle().IsChecked();
 
         StandardToolbar().Visibility(isStandardOn ? Visibility::Visible : Visibility::Collapsed);
         FormattingToolbar().Visibility(isFormattingOn ? Visibility::Visible : Visibility::Collapsed);
+        DrawingToolbar().Visibility(isDrawingOn ? Visibility::Visible : Visibility::Collapsed);
+
+        DrawingToolbarButton().IsChecked(isDrawingOn);
     }
 
     void MainWindow::OnToggleRulerClick(IInspectable const&, RoutedEventArgs const&)
@@ -209,7 +213,14 @@ namespace winrt::WinUI3TextEditor::implementation
             tag = unbox_value<hstring>(toggleBtn.Tag());
         }
 
-        if (tag == L"New")
+        if (tag == L"Drawing")
+        {
+            bool showDrawing = DrawingToolbarButton().IsChecked().Value();
+            DrawingToolbar().Visibility(showDrawing ? Visibility::Visible : Visibility::Collapsed);
+            DrawingToolbarToggle().IsChecked(showDrawing);
+            StatusText().Text(showDrawing ? L"Drawing Toolbar Activated" : L"Drawing Toolbar Deactivated");
+        }
+        else if (tag == L"New")
         {
             EditorBox().Text(L"");
             StatusText().Text(L"Created new document.");
@@ -255,5 +266,25 @@ namespace winrt::WinUI3TextEditor::implementation
                 StatusText().Text(L"Zoom level set to: " + val);
             }
         }
+    }
+
+    void MainWindow::OnDrawingToolbarButtonClick(IInspectable const& sender, RoutedEventArgs const&)
+    {
+        hstring tag = L"";
+
+        if (auto btn = sender.try_as<Button>())
+        {
+            tag = unbox_value<hstring>(btn.Tag());
+        }
+        else if (auto toggleBtn = sender.try_as<ToggleButton>())
+        {
+            tag = unbox_value<hstring>(toggleBtn.Tag());
+        }
+        else if (auto item = sender.try_as<MenuFlyoutItem>())
+        {
+            tag = unbox_value<hstring>(item.Tag());
+        }
+
+        StatusText().Text(L"Drawing Tool Selected: " + tag);
     }
 }
