@@ -235,6 +235,19 @@
 
                 <ToggleMenuFlyoutItem x:Name="GridlinesToggle" Text="Gridlines" IsChecked="True" Click="OnToggleGridlinesClick"/>
             </MenuBarItem>
+
+            <!-- WINDOW MENU -->
+            <MenuBarItem Title="Window">
+                <MenuFlyoutItem Text="New Window" Click="OnWindowItemClick"/>
+                <MenuFlyoutItem Text="Arrange All" Click="OnWindowItemClick"/>
+                <MenuFlyoutItem Text="Split" Click="OnWindowItemClick"/>
+
+                <MenuFlyoutSeparator/>
+
+                <!-- Open Document List -->
+                <RadioMenuFlyoutItem Text="1 Document1" GroupName="OpenDocuments" IsChecked="True" Click="OnSwitchDocumentClick"/>
+                <RadioMenuFlyoutItem Text="2 Document2" GroupName="OpenDocuments" Click="OnSwitchDocumentClick"/>
+            </MenuBarItem>
         </MenuBar>
 
         <!-- Toolbars Container -->
