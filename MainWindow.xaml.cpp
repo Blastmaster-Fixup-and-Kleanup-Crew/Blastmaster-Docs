@@ -7,6 +7,7 @@
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
 using namespace Microsoft::UI::Xaml::Controls;
+using namespace Microsoft::UI::Xaml::Controls::Primitives;
 
 namespace winrt::WinUI3TextEditor::implementation
 {
@@ -82,14 +83,8 @@ namespace winrt::WinUI3TextEditor::implementation
         bool isStandardOn = StandardToolbarToggle().IsChecked();
         bool isFormattingOn = FormattingToolbarToggle().IsChecked();
 
-        if (isStandardOn || isFormattingOn)
-        {
-            ToolbarsPanel().Visibility(Visibility::Visible);
-        }
-        else
-        {
-            ToolbarsPanel().Visibility(Visibility::Collapsed);
-        }
+        StandardToolbar().Visibility(isStandardOn ? Visibility::Visible : Visibility::Collapsed);
+        FormattingToolbar().Visibility(isFormattingOn ? Visibility::Visible : Visibility::Collapsed);
     }
 
     void MainWindow::OnToggleRulerClick(IInspectable const&, RoutedEventArgs const&)
@@ -199,5 +194,66 @@ namespace winrt::WinUI3TextEditor::implementation
         hstring action = item.Text();
 
         StatusText().Text(L"Help Action: " + action);
+    }
+
+    void MainWindow::OnStandardToolbarButtonClick(IInspectable const& sender, RoutedEventArgs const&)
+    {
+        hstring tag = L"";
+
+        if (auto btn = sender.try_as<Button>())
+        {
+            tag = unbox_value<hstring>(btn.Tag());
+        }
+        else if (auto toggleBtn = sender.try_as<ToggleButton>())
+        {
+            tag = unbox_value<hstring>(toggleBtn.Tag());
+        }
+
+        if (tag == L"New")
+        {
+            EditorBox().Text(L"");
+            StatusText().Text(L"Created new document.");
+        }
+        else if (tag == L"Undo" && EditorBox().CanUndo())
+        {
+            EditorBox().Undo();
+            StatusText().Text(L"Standard Toolbar Action: Undo");
+        }
+        else if (tag == L"Redo" && EditorBox().CanRedo())
+        {
+            EditorBox().Redo();
+            StatusText().Text(L"Standard Toolbar Action: Redo");
+        }
+        else if (tag == L"Cut")
+        {
+            EditorBox().CutSelectionToClipboard();
+            StatusText().Text(L"Standard Toolbar Action: Cut");
+        }
+        else if (tag == L"Copy")
+        {
+            EditorBox().CopySelectionToClipboard();
+            StatusText().Text(L"Standard Toolbar Action: Copy");
+        }
+        else if (tag == L"Paste")
+        {
+            EditorBox().PasteFromClipboard();
+            StatusText().Text(L"Standard Toolbar Action: Paste");
+        }
+        else
+        {
+            StatusText().Text(L"Standard Toolbar Action: " + tag);
+        }
+    }
+
+    void MainWindow::OnZoomComboBoxChanged(IInspectable const& sender, SelectionChangedEventArgs const&)
+    {
+        if (auto combo = sender.try_as<ComboBox>())
+        {
+            if (auto selectedItem = combo.SelectedItem().try_as<ComboBoxItem>())
+            {
+                hstring val = unbox_value<hstring>(selectedItem.Content());
+                StatusText().Text(L"Zoom level set to: " + val);
+            }
+        }
     }
 }
