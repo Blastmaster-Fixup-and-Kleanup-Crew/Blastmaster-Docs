@@ -287,4 +287,37 @@ namespace winrt::WinUI3TextEditor::implementation
 
         StatusText().Text(L"Drawing Tool Selected: " + tag);
     }
+
+    void MainWindow::OnFormattingToolbarButtonClick(IInspectable const& sender, RoutedEventArgs const&)
+    {
+        hstring tag = L"";
+
+        if (auto btn = sender.try_as<Button>())
+        {
+            tag = unbox_value<hstring>(btn.Tag());
+        }
+        else if (auto toggleBtn = sender.try_as<ToggleButton>())
+        {
+            tag = unbox_value<hstring>(toggleBtn.Tag());
+        }
+        else if (auto item = sender.try_as<MenuFlyoutItem>())
+        {
+            tag = unbox_value<hstring>(item.Tag());
+        }
+
+        StatusText().Text(L"Formatting Command Selected: " + tag);
+    }
+
+    void MainWindow::OnFormattingComboBoxChanged(IInspectable const& sender, SelectionChangedEventArgs const&)
+    {
+        if (auto combo = sender.try_as<ComboBox>())
+        {
+            hstring category = unbox_value<hstring>(combo.Tag());
+            if (auto selectedItem = combo.SelectedItem().try_as<ComboBoxItem>())
+            {
+                hstring val = unbox_value<hstring>(selectedItem.Content());
+                StatusText().Text(L"Formatting " + category + L" set to: " + val);
+            }
+        }
+    }
 }
