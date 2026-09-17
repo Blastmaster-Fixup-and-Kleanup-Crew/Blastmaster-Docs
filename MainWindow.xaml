@@ -100,6 +100,38 @@
 
                 <MenuFlyoutItem Text="Zoom..." Click="OnZoomClick"/>
             </MenuBarItem>
+
+            <!-- INSERT MENU -->
+            <MenuBarItem Title="Insert">
+                <MenuFlyoutSubItem Text="Break">
+                    <MenuFlyoutItem Text="Page Break" Click="OnInsertItemClick"/>
+                    <MenuFlyoutItem Text="Column Break" Click="OnInsertItemClick"/>
+                    <MenuFlyoutItem Text="Section Break" Click="OnInsertItemClick"/>
+                </MenuFlyoutSubItem>
+
+                <MenuFlyoutItem Text="Page Numbers..." Click="OnInsertItemClick"/>
+                <MenuFlyoutItem Text="Date and Time..." Click="OnInsertItemClick"/>
+                <MenuFlyoutItem Text="AutoText..." Click="OnInsertItemClick"/>
+                <MenuFlyoutItem Text="Field..." Click="OnInsertItemClick"/>
+                <MenuFlyoutItem Text="Symbol..." Click="OnInsertItemClick"/>
+                <MenuFlyoutItem Text="Form Field..." Click="OnInsertItemClick"/>
+
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutSubItem Text="Reference">
+                    <MenuFlyoutItem Text="Footnote..." Click="OnInsertItemClick"/>
+                    <MenuFlyoutItem Text="Caption..." Click="OnInsertItemClick"/>
+                    <MenuFlyoutItem Text="Cross-reference..." Click="OnInsertItemClick"/>
+                    <MenuFlyoutItem Text="Index and Tables..." Click="OnInsertItemClick"/>
+                </MenuFlyoutSubItem>
+
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="File..." Click="OnInsertItemClick"/>
+                <MenuFlyoutItem Text="Frame" Click="OnInsertItemClick"/>
+                <MenuFlyoutItem Text="Picture..." Click="OnInsertItemClick"/>
+                <MenuFlyoutItem Text="Object..." Click="OnInsertItemClick"/>
+            </MenuBarItem>
         </MenuBar>
 
         <!-- Toolbars Container -->
