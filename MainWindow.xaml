@@ -359,12 +359,121 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <!-- FORMATTING TOOLBAR (Placeholder) -->
-            <StackPanel x:Name="FormattingToolbar" Orientation="Horizontal" Padding="4,2" Spacing="2">
-                <Button Content="Bold" Margin="0,0,4,0"/>
-                <Button Content="Italic" Margin="0,0,4,0"/>
-                <Button Content="Underline" Margin="0,0,4,0"/>
-            </StackPanel>
+            <!-- FORMATTING TOOLBAR -->
+            <ScrollViewer x:Name="FormattingToolbar" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Auto">
+                <StackPanel Orientation="Horizontal" Padding="4,2" Spacing="2">
+                    <ComboBox Width="130" SelectedIndex="0" SelectionChanged="OnFormattingComboBoxChanged" ToolTipService.ToolTip="Style" VerticalAlignment="Center" Tag="Style">
+                        <ComboBoxItem Content="Normal"/>
+                        <ComboBoxItem Content="Heading 1"/>
+                        <ComboBoxItem Content="Heading 2"/>
+                        <ComboBoxItem Content="Heading 3"/>
+                        <ComboBoxItem Content="Title"/>
+                        <ComboBoxItem Content="Subtitle"/>
+                        <ComboBoxItem Content="Bullet List"/>
+                    </ComboBox>
+
+                    <ComboBox Width="150" SelectedIndex="0" SelectionChanged="OnFormattingComboBoxChanged" ToolTipService.ToolTip="Font" VerticalAlignment="Center" Tag="Font">
+                        <ComboBoxItem Content="Arial"/>
+                        <ComboBoxItem Content="Calibri"/>
+                        <ComboBoxItem Content="Comic Sans MS"/>
+                        <ComboBoxItem Content="Courier New"/>
+                        <ComboBoxItem Content="Georgia"/>
+                        <ComboBoxItem Content="Segoe UI"/>
+                        <ComboBoxItem Content="Times New Roman"/>
+                        <ComboBoxItem Content="Verdana"/>
+                    </ComboBox>
+
+                    <ComboBox Width="75" SelectedIndex="2" SelectionChanged="OnFormattingComboBoxChanged" ToolTipService.ToolTip="Font Size" VerticalAlignment="Center" Tag="Font Size">
+                        <ComboBoxItem Content="8"/>
+                        <ComboBoxItem Content="10"/>
+                        <ComboBoxItem Content="12"/>
+                        <ComboBoxItem Content="14"/>
+                        <ComboBoxItem Content="16"/>
+                        <ComboBoxItem Content="18"/>
+                        <ComboBoxItem Content="24"/>
+                        <ComboBoxItem Content="36"/>
+                        <ComboBoxItem Content="72"/>
+                    </ComboBox>
+
+                    <AppBarSeparator/>
+
+                    <ToggleButton ToolTipService.ToolTip="Bold" Click="OnFormattingToolbarButtonClick" Tag="Bold">
+                        <FontIcon Glyph="&#xE8DD;"/>
+                    </ToggleButton>
+                    <ToggleButton ToolTipService.ToolTip="Italic" Click="OnFormattingToolbarButtonClick" Tag="Italic">
+                        <FontIcon Glyph="&#xE8DB;"/>
+                    </ToggleButton>
+                    <ToggleButton ToolTipService.ToolTip="Underline" Click="OnFormattingToolbarButtonClick" Tag="Underline">
+                        <FontIcon Glyph="&#xE8DC;"/>
+                    </ToggleButton>
+
+                    <AppBarSeparator/>
+
+                    <Button ToolTipService.ToolTip="Align Left" Click="OnFormattingToolbarButtonClick" Tag="Align Left">
+                        <FontIcon Glyph="&#xE8E4;"/>
+                    </Button>
+                    <Button ToolTipService.ToolTip="Center" Click="OnFormattingToolbarButtonClick" Tag="Center">
+                        <FontIcon Glyph="&#xE8E3;"/>
+                    </Button>
+                    <Button ToolTipService.ToolTip="Align Right" Click="OnFormattingToolbarButtonClick" Tag="Align Right">
+                        <FontIcon Glyph="&#xE8E2;"/>
+                    </Button>
+
+                    <Button ToolTipService.ToolTip="Justify" Click="OnFormattingToolbarButtonClick" Tag="Justify">
+                        <FontIcon Glyph="&#xE8E7;"/>
+                    </Button>
+
+                    <AppBarSeparator/>
+
+                    <ToggleButton ToolTipService.ToolTip="Numbering" Click="OnFormattingToolbarButtonClick" Tag="Numbering">
+                        <FontIcon Glyph="&#xF128;"/>
+                    </ToggleButton>
+                    <ToggleButton ToolTipService.ToolTip="Bullets" Click="OnFormattingToolbarButtonClick" Tag="Bullets">
+                        <FontIcon Glyph="&#xE8FD;"/>
+                    </ToggleButton>
+
+                    <AppBarSeparator/>
+
+                    <Button ToolTipService.ToolTip="Decrease Indent" Click="OnFormattingToolbarButtonClick" Tag="Decrease Indent">
+                        <FontIcon Glyph="&#xE8E0;"/>
+                    </Button>
+                    <Button ToolTipService.ToolTip="Increase Indent" Click="OnFormattingToolbarButtonClick" Tag="Increase Indent">
+                        <FontIcon Glyph="&#xE8D9;"/>
+                    </Button>
+
+                    <AppBarSeparator/>
+
+                    <Button ToolTipService.ToolTip="Borders" Click="OnFormattingToolbarButtonClick" Tag="Borders">
+                        <FontIcon Glyph="&#xE80A;"/>
+                    </Button>
+
+                    <DropDownButton ToolTipService.ToolTip="Highlight Color">
+                        <FontIcon Glyph="&#xE7E6;"/>
+                        <DropDownButton.Flyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="Yellow" Click="OnFormattingToolbarButtonClick" Tag="Highlight Color: Yellow"/>
+                                <MenuFlyoutItem Text="Green" Click="OnFormattingToolbarButtonClick" Tag="Highlight Color: Green"/>
+                                <MenuFlyoutItem Text="Cyan" Click="OnFormattingToolbarButtonClick" Tag="Highlight Color: Cyan"/>
+                                <MenuFlyoutItem Text="Magenta" Click="OnFormattingToolbarButtonClick" Tag="Highlight Color: Magenta"/>
+                                <MenuFlyoutItem Text="None" Click="OnFormattingToolbarButtonClick" Tag="Highlight Color: None"/>
+                            </MenuFlyout>
+                        </DropDownButton.Flyout>
+                    </DropDownButton>
+
+                    <DropDownButton ToolTipService.ToolTip="Font Color">
+                        <FontIcon Glyph="&#xE8D3;"/>
+                        <DropDownButton.Flyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="Black" Click="OnFormattingToolbarButtonClick" Tag="Font Color: Black"/>
+                                <MenuFlyoutItem Text="Red" Click="OnFormattingToolbarButtonClick" Tag="Font Color: Red"/>
+                                <MenuFlyoutItem Text="Blue" Click="OnFormattingToolbarButtonClick" Tag="Font Color: Blue"/>
+                                <MenuFlyoutItem Text="Green" Click="OnFormattingToolbarButtonClick" Tag="Font Color: Green"/>
+                                <MenuFlyoutItem Text="Automatic" Click="OnFormattingToolbarButtonClick" Tag="Font Color: Automatic"/>
+                            </MenuFlyout>
+                        </DropDownButton.Flyout>
+                    </DropDownButton>
+                </StackPanel>
+            </ScrollViewer>
         </StackPanel>
 
         <!-- Main Workspace Area -->
