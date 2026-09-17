@@ -12,6 +12,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Main Menu Bar -->
@@ -87,6 +88,7 @@
                 <MenuFlyoutSubItem Text="Toolbars">
                     <ToggleMenuFlyoutItem x:Name="StandardToolbarToggle" Text="Standard" IsChecked="True" Click="OnToggleToolbarClick"/>
                     <ToggleMenuFlyoutItem x:Name="FormattingToolbarToggle" Text="Formatting" IsChecked="True" Click="OnToggleToolbarClick"/>
+                    <ToggleMenuFlyoutItem x:Name="DrawingToolbarToggle" Text="Drawing" IsChecked="True" Click="OnToggleToolbarClick"/>
                 </MenuFlyoutSubItem>
                 <ToggleMenuFlyoutItem x:Name="RulerToggle" Text="Ruler" IsChecked="True" Click="OnToggleRulerClick"/>
 
@@ -264,7 +266,7 @@
             </MenuBarItem>
         </MenuBar>
 
-        <!-- Toolbars Area -->
+        <!-- Top Toolbars Area -->
         <StackPanel Grid.Row="1" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
             <!-- STANDARD TOOLBAR -->
             <ScrollViewer x:Name="StandardToolbar" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Auto">
@@ -333,7 +335,7 @@
 
                     <AppBarSeparator/>
 
-                    <ToggleButton ToolTipService.ToolTip="Drawing" Click="OnStandardToolbarButtonClick" Tag="Drawing">
+                    <ToggleButton x:Name="DrawingToolbarButton" ToolTipService.ToolTip="Drawing" IsChecked="True" Click="OnStandardToolbarButtonClick" Tag="Drawing">
                         <FontIcon Glyph="&#xE76D;"/>
                     </ToggleButton>
                     <ToggleButton ToolTipService.ToolTip="Show/Hide Non-Printing Characters (¶)" Click="OnStandardToolbarButtonClick" Tag="ShowHideCharacters">
@@ -381,8 +383,104 @@
             <TextBox x:Name="EditorBox" Grid.Row="1" AcceptsReturn="True" TextWrapping="Wrap" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="10" PlaceholderText="Type your document here..."/>
         </Grid>
 
+        <!-- DRAWING TOOLBAR (Bottom Workspace Dock) -->
+        <ScrollViewer x:Name="DrawingToolbar" Grid.Row="3" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Auto">
+            <StackPanel Orientation="Horizontal" Padding="4,2" Spacing="2">
+                <ToggleButton ToolTipService.ToolTip="Select Object" Click="OnDrawingToolbarButtonClick" Tag="Select Object">
+                    <FontIcon Glyph="&#xEF20;"/>
+                </ToggleButton>
+
+                <AppBarSeparator/>
+
+                <Button ToolTipService.ToolTip="Line" Click="OnDrawingToolbarButtonClick" Tag="Line">
+                    <FontIcon Glyph="&#xE960;"/>
+                </Button>
+                <Button ToolTipService.ToolTip="Rectangle" Click="OnDrawingToolbarButtonClick" Tag="Rectangle">
+                    <FontIcon Glyph="&#xE751;"/>
+                </Button>
+                <Button ToolTipService.ToolTip="Ellipse" Click="OnDrawingToolbarButtonClick" Tag="Ellipse">
+                    <FontIcon Glyph="&#xEA3A;"/>
+                </Button>
+                <Button ToolTipService.ToolTip="Arc" Click="OnDrawingToolbarButtonClick" Tag="Arc">
+                    <FontIcon Glyph="&#xF57B;"/>
+                </Button>
+                <Button ToolTipService.ToolTip="Freeform" Click="OnDrawingToolbarButtonClick" Tag="Freeform">
+                    <FontIcon Glyph="&#xEDC6;"/>
+                </Button>
+
+                <AppBarSeparator/>
+
+                <Button ToolTipService.ToolTip="Text Box" Click="OnDrawingToolbarButtonClick" Tag="Text Box">
+                    <FontIcon Glyph="&#xE8C7;"/>
+                </Button>
+                <Button ToolTipService.ToolTip="Callout" Click="OnDrawingToolbarButtonClick" Tag="Callout">
+                    <FontIcon Glyph="&#xE25C;"/>
+                </Button>
+                <Button ToolTipService.ToolTip="Format Callout" Click="OnDrawingToolbarButtonClick" Tag="Format Callout">
+                    <FontIcon Glyph="&#xE713;"/>
+                </Button>
+
+                <AppBarSeparator/>
+
+                <Button ToolTipService.ToolTip="Fill Color" Click="OnDrawingToolbarButtonClick" Tag="Fill Color">
+                    <FontIcon Glyph="&#xE771;"/>
+                </Button>
+                <Button ToolTipService.ToolTip="Line Color" Click="OnDrawingToolbarButtonClick" Tag="Line Color">
+                    <FontIcon Glyph="&#xE76D;"/>
+                </Button>
+
+                <DropDownButton ToolTipService.ToolTip="Line Style">
+                    <FontIcon Glyph="&#xE7C8;"/>
+                    <DropDownButton.Flyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem Text="1 pt Thin" Click="OnDrawingToolbarButtonClick" Tag="Line Style: Solid Thin"/>
+                            <MenuFlyoutItem Text="3 pt Thick" Click="OnDrawingToolbarButtonClick" Tag="Line Style: Solid Thick"/>
+                            <MenuFlyoutItem Text="Dashed" Click="OnDrawingToolbarButtonClick" Tag="Line Style: Dashed"/>
+                            <MenuFlyoutItem Text="Dotted" Click="OnDrawingToolbarButtonClick" Tag="Line Style: Dotted"/>
+                        </MenuFlyout>
+                    </DropDownButton.Flyout>
+                </DropDownButton>
+
+                <AppBarSeparator/>
+
+                <Button ToolTipService.ToolTip="Bring to Front" Click="OnDrawingToolbarButtonClick" Tag="Bring to Front">
+                    <FontIcon Glyph="&#xE898;"/>
+                </Button>
+                <Button ToolTipService.ToolTip="Send to Back" Click="OnDrawingToolbarButtonClick" Tag="Send to Back">
+                    <FontIcon Glyph="&#xE899;"/>
+                </Button>
+
+                <AppBarSeparator/>
+
+                <Button ToolTipService.ToolTip="Group" Click="OnDrawingToolbarButtonClick" Tag="Group">
+                    <FontIcon Glyph="&#xE71D;"/>
+                </Button>
+
+                <Button ToolTipService.ToolTip="Ungroup" Click="OnDrawingToolbarButtonClick" Tag="Ungroup">
+                    <FontIcon Glyph="&#xE71E;"/>
+                </Button>
+
+                <AppBarSeparator/>
+
+                <DropDownButton ToolTipService.ToolTip="Rotate / Flip">
+                    <FontIcon Glyph="&#xE7AD;"/>
+                    <DropDownButton.Flyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem Text="Flip Horizontal" Click="OnDrawingToolbarButtonClick" Tag="Flip Horizontal"/>
+                            <MenuFlyoutItem Text="Flip Vertical" Click="OnDrawingToolbarButtonClick" Tag="Flip Vertical"/>
+                            <MenuFlyoutItem Text="Rotate Right 90°" Click="OnDrawingToolbarButtonClick" Tag="Rotate Right"/>
+                        </MenuFlyout>
+                    </DropDownButton.Flyout>
+                </DropDownButton>
+
+                <Button ToolTipService.ToolTip="Reshape" Click="OnDrawingToolbarButtonClick" Tag="Reshape">
+                    <FontIcon Glyph="&#xE77B;"/>
+                </Button>
+            </StackPanel>
+        </ScrollViewer>
+
         <!-- Bottom Status Bar -->
-        <Border Grid.Row="3" Background="{ThemeResource SystemControlBackgroundChromeLowBrush}" Padding="10,4">
+        <Border Grid.Row="4" Background="{ThemeResource SystemControlBackgroundChromeLowBrush}" Padding="10,4">
             <TextBlock x:Name="StatusText" Text="Mode: Normal | Zoom: 100%" FontSize="12"/>
         </Border>
     </Grid>
