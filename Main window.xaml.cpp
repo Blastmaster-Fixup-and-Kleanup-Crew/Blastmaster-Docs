@@ -131,4 +131,12 @@ namespace winrt::WinUI3TextEditor::implementation
     {
         StatusText().Text(L"Zoom Dialog Requested");
     }
+
+    void MainWindow::OnInsertItemClick(IInspectable const& sender, RoutedEventArgs const&)
+    {
+        auto item = sender.as<MenuFlyoutItem>();
+        hstring action = item.Text();
+
+        StatusText().Text(L"Inserted: " + action);
+    }
 }
