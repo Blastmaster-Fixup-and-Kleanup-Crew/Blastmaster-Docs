@@ -82,15 +82,18 @@ namespace winrt::WinUI3TextEditor::implementation
     {
         bool isStandardOn = StandardToolbarToggle().IsChecked();
         bool isFormattingOn = FormattingToolbarToggle().IsChecked();
+        bool isBordersOn = BordersToolbarToggle().IsChecked();
         bool isDrawingOn = DrawingToolbarToggle().IsChecked();
         bool isFormsOn = FormsToolbarToggle().IsChecked();
 
         StandardToolbar().Visibility(isStandardOn ? Visibility::Visible : Visibility::Collapsed);
         FormattingToolbar().Visibility(isFormattingOn ? Visibility::Visible : Visibility::Collapsed);
+        BordersToolbar().Visibility(isBordersOn ? Visibility::Visible : Visibility::Collapsed);
         DrawingToolbar().Visibility(isDrawingOn ? Visibility::Visible : Visibility::Collapsed);
         FormsSidebar().Visibility(isFormsOn ? Visibility::Visible : Visibility::Collapsed);
 
         DrawingToolbarButton().IsChecked(isDrawingOn);
+        BordersToolbarButton().IsChecked(isBordersOn);
     }
 
     void MainWindow::OnToggleRulerClick(IInspectable const&, RoutedEventArgs const&)
@@ -307,7 +310,17 @@ namespace winrt::WinUI3TextEditor::implementation
             tag = unbox_value<hstring>(item.Tag());
         }
 
-        StatusText().Text(L"Formatting Command Selected: " + tag);
+        if (tag == L"Borders Toolbar")
+        {
+            bool showBorders = BordersToolbarButton().IsChecked().Value();
+            BordersToolbar().Visibility(showBorders ? Visibility::Visible : Visibility::Collapsed);
+            BordersToolbarToggle().IsChecked(showBorders);
+            StatusText().Text(showBorders ? L"Borders Toolbar Activated" : L"Borders Toolbar Deactivated");
+        }
+        else
+        {
+            StatusText().Text(L"Formatting Command Selected: " + tag);
+        }
     }
 
     void MainWindow::OnFormattingComboBoxChanged(IInspectable const& sender, SelectionChangedEventArgs const&)
@@ -340,5 +353,34 @@ namespace winrt::WinUI3TextEditor::implementation
         }
 
         StatusText().Text(L"Forms Command Executed: " + tag);
+    }
+
+    void MainWindow::OnBordersToolbarButtonClick(IInspectable const& sender, RoutedEventArgs const&)
+    {
+        hstring tag = L"";
+
+        if (auto btn = sender.try_as<Button>())
+        {
+            tag = unbox_value<hstring>(btn.Tag());
+        }
+        else if (auto item = sender.try_as<MenuFlyoutItem>())
+        {
+            tag = unbox_value<hstring>(item.Tag());
+        }
+
+        StatusText().Text(L"Borders Command Executed: " + tag);
+    }
+
+    void MainWindow::OnBordersComboBoxChanged(IInspectable const& sender, SelectionChangedEventArgs const&)
+    {
+        if (auto combo = sender.try_as<ComboBox>())
+        {
+            hstring category = unbox_value<hstring>(combo.Tag());
+            if (auto selectedItem = combo.SelectedItem().try_as<ComboBoxItem>())
+            {
+                hstring val = unbox_value<hstring>(selectedItem.Content());
+                StatusText().Text(L"Borders " + category + L" set to: " + val);
+            }
+        }
     }
 }
