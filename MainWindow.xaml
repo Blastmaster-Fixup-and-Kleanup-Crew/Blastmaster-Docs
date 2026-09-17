@@ -264,11 +264,105 @@
             </MenuBarItem>
         </MenuBar>
 
-        <!-- Toolbars Container -->
-        <StackPanel x:Name="ToolbarsPanel" Grid.Row="1" Orientation="Horizontal" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" Padding="8,4">
-            <Button Content="Bold" Margin="0,0,4,0"/>
-            <Button Content="Italic" Margin="0,0,4,0"/>
-            <Button Content="Underline" Margin="0,0,4,0"/>
+        <!-- Toolbars Area -->
+        <StackPanel Grid.Row="1" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+            <!-- STANDARD TOOLBAR -->
+            <ScrollViewer x:Name="StandardToolbar" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Auto">
+                <StackPanel Orientation="Horizontal" Padding="4,2" Spacing="2">
+                    <Button ToolTipService.ToolTip="New Document" Click="OnStandardToolbarButtonClick" Tag="New">
+                        <SymbolIcon Symbol="Document"/>
+                    </Button>
+                    <Button ToolTipService.ToolTip="Open File" Click="OnStandardToolbarButtonClick" Tag="Open">
+                        <SymbolIcon Symbol="Folder"/>
+                    </Button>
+                    <Button ToolTipService.ToolTip="Save" Click="OnStandardToolbarButtonClick" Tag="Save">
+                        <SymbolIcon Symbol="Save"/>
+                    </Button>
+                    
+                    <AppBarSeparator/>
+
+                    <Button ToolTipService.ToolTip="Print" Click="OnStandardToolbarButtonClick" Tag="Print">
+                        <SymbolIcon Symbol="Print"/>
+                    </Button>
+                    <Button ToolTipService.ToolTip="Print Preview" Click="OnStandardToolbarButtonClick" Tag="Print Preview">
+                        <FontIcon Glyph="&#xE8A1;"/>
+                    </Button>
+
+                    <AppBarSeparator/>
+
+                    <Button ToolTipService.ToolTip="Spelling" Click="OnStandardToolbarButtonClick" Tag="Spelling">
+                        <FontIcon Glyph="&#xF1D3;"/>
+                    </Button>
+
+                    <AppBarSeparator/>
+
+                    <Button ToolTipService.ToolTip="Cut" Click="OnStandardToolbarButtonClick" Tag="Cut">
+                        <SymbolIcon Symbol="Cut"/>
+                    </Button>
+                    <Button ToolTipService.ToolTip="Copy" Click="OnStandardToolbarButtonClick" Tag="Copy">
+                        <SymbolIcon Symbol="Copy"/>
+                    </Button>
+
+                    <Button ToolTipService.ToolTip="Paste" Click="OnStandardToolbarButtonClick" Tag="Paste">
+                        <SymbolIcon Symbol="Paste"/>
+                    </Button>
+                    <Button ToolTipService.ToolTip="Format Painter" Click="OnStandardToolbarButtonClick" Tag="Format Painter">
+                        <FontIcon Glyph="&#xE72B;"/>
+                    </Button>
+
+                    <AppBarSeparator/>
+
+                    <Button ToolTipService.ToolTip="Undo" Click="OnStandardToolbarButtonClick" Tag="Undo">
+                        <SymbolIcon Symbol="Undo"/>
+                    </Button>
+                    <Button ToolTipService.ToolTip="Redo / Repeat" Click="OnStandardToolbarButtonClick" Tag="Redo">
+                        <SymbolIcon Symbol="Redo"/>
+                    </Button>
+
+                    <AppBarSeparator/>
+
+                    <Button ToolTipService.ToolTip="AutoFormat" Click="OnStandardToolbarButtonClick" Tag="AutoFormat">
+                        <FontIcon Glyph="&#xE8B8;"/>
+                    </Button>
+                    <Button ToolTipService.ToolTip="Insert Table" Click="OnStandardToolbarButtonClick" Tag="Insert Table">
+                        <FontIcon Glyph="&#xE7B8;"/>
+                    </Button>
+                    <Button ToolTipService.ToolTip="Columns" Click="OnStandardToolbarButtonClick" Tag="Columns">
+                        <FontIcon Glyph="&#xE82D;"/>
+                    </Button>
+
+                    <AppBarSeparator/>
+
+                    <ToggleButton ToolTipService.ToolTip="Drawing" Click="OnStandardToolbarButtonClick" Tag="Drawing">
+                        <FontIcon Glyph="&#xE76D;"/>
+                    </ToggleButton>
+                    <ToggleButton ToolTipService.ToolTip="Show/Hide Non-Printing Characters (¶)" Click="OnStandardToolbarButtonClick" Tag="ShowHideCharacters">
+                        <TextBlock Text="¶" FontWeight="Bold"/>
+                    </ToggleButton>
+
+                    <AppBarSeparator/>
+
+                    <ComboBox Width="110" SelectedIndex="2" SelectionChanged="OnZoomComboBoxChanged" ToolTipService.ToolTip="Zoom Control" VerticalAlignment="Center">
+                        <ComboBoxItem Content="200%"/>
+                        <ComboBoxItem Content="150%"/>
+                        <ComboBoxItem Content="100%"/>
+                        <ComboBoxItem Content="75%"/>
+                        <ComboBoxItem Content="50%"/>
+                        <ComboBoxItem Content="Page Width"/>
+                    </ComboBox>
+
+                    <Button ToolTipService.ToolTip="Help" Click="OnStandardToolbarButtonClick" Tag="Help">
+                        <SymbolIcon Symbol="Help"/>
+                    </Button>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- FORMATTING TOOLBAR (Placeholder) -->
+            <StackPanel x:Name="FormattingToolbar" Orientation="Horizontal" Padding="4,2" Spacing="2">
+                <Button Content="Bold" Margin="0,0,4,0"/>
+                <Button Content="Italic" Margin="0,0,4,0"/>
+                <Button Content="Underline" Margin="0,0,4,0"/>
+            </StackPanel>
         </StackPanel>
 
         <!-- Main Workspace Area -->
