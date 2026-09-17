@@ -17,5 +17,7 @@ namespace WinUI3TextEditor
         void OnToolsItemClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
         void OnTableItemClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
         void OnToggleGridlinesClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
+        void OnWindowItemClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
+        void OnSwitchDocumentClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
     }
 }
