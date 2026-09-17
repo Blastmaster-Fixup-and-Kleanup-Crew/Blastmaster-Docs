@@ -5,9 +5,10 @@
 #endif
 
 #include <microsoft.ui.xaml.window.h>
-#include <winrt/Windows.ApplicationModel.DataTransfer.h>
+#include <winrt/Windows.Data.Xml.Dom.h>
 #include <winrt/Windows.Graphics.Printing.h>
 #include <winrt/Windows.Storage.Pickers.h>
+#include <winrt/Windows.Storage.Streams.h>
 #include <winrt/Windows.Storage.h>
 #include <winrt/Windows.System.h>
 
@@ -15,8 +16,10 @@ using namespace winrt;
 using namespace Microsoft::UI::Xaml;
 using namespace Microsoft::UI::Xaml::Controls;
 using namespace Microsoft::UI::Text;
+using namespace Windows::Data::Xml::Dom;
 using namespace Windows::Storage;
 using namespace Windows::Storage::Pickers;
+using namespace Windows::Storage::Streams;
 
 namespace winrt::WordProcessorApp::implementation
 {
@@ -33,7 +36,90 @@ namespace winrt::WordProcessorApp::implementation
         return hwnd;
     }
 
-    // --- File Menu Item Commands ---
+    // --- XML Serialization and Deserialization (.dccx / .dctx) ---
+
+    IAsyncAction MainWindow::SaveCustomXmlFile(StorageFile const& file, bool isTemplate)
+    {
+        // 1. Extract Rich Text payload
+        InMemoryRandomAccessStream memoryStream;
+        Editor().Document().SaveToStream(TextGetOptions::FormatRtf, memoryStream);
+        
+        DataReader reader(memoryStream.GetInputStreamAt(0));
+        co_await reader.LoadAsync(static_cast<uint32_t>(memoryStream.Size()));
+        hstring rtfContent = reader.ReadString(reader.UnconsumedBufferLength());
+
+        // 2. Build XML DOM Structure
+        XmlDocument doc;
+        hstring rootTag = isTemplate ? L"DocumentTemplate" : L"Document";
+        hstring rootNs = isTemplate ? L"http://schemas.dccx.org/2026/template" : L"http://schemas.dccx.org/2026/document";
+
+        XmlElement root = doc.CreateElement(rootTag);
+        root.SetAttribute(L"xmlns", rootNs);
+        root.SetAttribute(L"Version", L"1.0");
+        doc.AppendChild(root);
+
+        // Metadata Properties
+        XmlElement props = doc.CreateElement(L"Properties");
+        XmlElement title = doc.CreateElement(L"Title");
+        title.InnerText(file.DisplayName());
+        props.AppendChild(title);
+        root.AppendChild(props);
+
+        // Page Layout
+        XmlElement pageSetup = doc.CreateElement(L"PageSetup");
+        pageSetup.SetAttribute(L"Size", L"Letter");
+        pageSetup.SetAttribute(L"Orientation", L"Portrait");
+        root.AppendChild(pageSetup);
+
+        // Body Content encapsulating RTF CDATA
+        XmlElement body = doc.CreateElement(isTemplate ? L"InitialContent" : L"Body");
+        XmlElement rtfNode = doc.CreateElement(L"RtfContent");
+        
+        // Append raw RTF text within node
+        rtfNode.InnerText(rtfContent);
+        body.AppendChild(rtfNode);
+        root.AppendChild(body);
+
+        // 3. Write XML output stream
+        co_await FileIO::WriteTextAsync(file, doc.GetXml());
+    }
+
+    IAsyncAction MainWindow::LoadCustomXmlFile(StorageFile const& file, bool isTemplateInit)
+    {
+        hstring xmlText = co_await FileIO::ReadTextAsync(file);
+        XmlDocument doc;
+        doc.LoadXml(xmlText);
+
+        XmlNodeList rtfNodes = doc.GetElementsByTagName(L"RtfContent");
+        if (rtfNodes.Length() > 0)
+        {
+            hstring rtfContent = rtfNodes.Item(0).InnerText();
+
+            InMemoryRandomAccessStream memoryStream;
+            DataWriter writer(memoryStream);
+            writer.WriteString(rtfContent);
+            co_await writer.StoreAsync();
+            co_await writer.FlushAsync();
+            memoryStream.Seek(0);
+
+            Editor().Document().LoadFromStream(TextSetOptions::FormatRtf, memoryStream);
+        }
+
+        if (!isTemplateInit)
+        {
+            m_currentFile = file;
+            AddToRecentFiles(file.Path());
+        }
+        else
+        {
+            // If initialized from a template, treat as an unsaved new document
+            m_currentFile = nullptr;
+        }
+
+        Editor().IsEnabled(true);
+    }
+
+    // --- File Menu Handlers ---
 
     void MainWindow::New_Click(IInspectable const&, RoutedEventArgs const&)
     {
@@ -42,21 +128,43 @@ namespace winrt::WordProcessorApp::implementation
         Editor().IsEnabled(true);
     }
 
+    IAsyncAction MainWindow::NewFromTemplate_Click(IInspectable const&, RoutedEventArgs const&)
+    {
+        FileOpenPicker picker;
+        picker.as<IInitializeWithWindow>()->Initialize(GetWindowHandle());
+        picker.FileTypeFilter().Append(L".dctx");
+
+        StorageFile file = co_await picker.PickSingleFileAsync();
+        if (file != nullptr)
+        {
+            co_await LoadCustomXmlFile(file, true);
+        }
+    }
+
     IAsyncAction MainWindow::Open_Click(IInspectable const&, RoutedEventArgs const&)
     {
         FileOpenPicker picker;
         picker.as<IInitializeWithWindow>()->Initialize(GetWindowHandle());
+        picker.FileTypeFilter().Append(L".dccx");
+        picker.FileTypeFilter().Append(L".dctx");
         picker.FileTypeFilter().Append(L".rtf");
         picker.FileTypeFilter().Append(L".txt");
 
         StorageFile file = co_await picker.PickSingleFileAsync();
         if (file != nullptr)
         {
-            streams::IRandomAccessStream stream = co_await file.OpenAsync(FileAccessMode::Read);
-            Editor().Document().LoadFromStream(TextSetOptions::FormatRtf, stream);
-            m_currentFile = file;
-            Editor().IsEnabled(true);
-            AddToRecentFiles(file.Path());
+            if (file.FileType() == L".dccx" || file.FileType() == L".dctx")
+            {
+                co_await LoadCustomXmlFile(file, false);
+            }
+            else
+            {
+                IRandomAccessStream stream = co_await file.OpenAsync(FileAccessMode::Read);
+                Editor().Document().LoadFromStream(TextSetOptions::FormatRtf, stream);
+                m_currentFile = file;
+                Editor().IsEnabled(true);
+                AddToRecentFiles(file.Path());
+            }
         }
     }
 
@@ -64,7 +172,7 @@ namespace winrt::WordProcessorApp::implementation
     {
         Editor().Document().SetText(TextSetOptions::None, L"");
         m_currentFile = nullptr;
-        Editor().IsEnabled(false); // Disables editing area while document is closed
+        Editor().IsEnabled(false);
     }
 
     IAsyncAction MainWindow::Save_Click(IInspectable const&, RoutedEventArgs const&)
@@ -73,9 +181,13 @@ namespace winrt::WordProcessorApp::implementation
         {
             co_await SaveAs_Click(nullptr, nullptr);
         }
+        else if (m_currentFile.FileType() == L".dccx" || m_currentFile.FileType() == L".dctx")
+        {
+            co_await SaveCustomXmlFile(m_currentFile, m_currentFile.FileType() == L".dctx");
+        }
         else
         {
-            streams::IRandomAccessStream stream = co_await m_currentFile.OpenAsync(FileAccessMode::ReadWrite);
+            IRandomAccessStream stream = co_await m_currentFile.OpenAsync(FileAccessMode::ReadWrite);
             Editor().Document().SaveToStream(TextGetOptions::FormatRtf, stream);
         }
     }
@@ -84,16 +196,41 @@ namespace winrt::WordProcessorApp::implementation
     {
         FileSavePicker picker;
         picker.as<IInitializeWithWindow>()->Initialize(GetWindowHandle());
-        picker.FileTypeChoices().Insert(L"Rich Text Format", winrt::single_threaded_vector<hstring>({ L".rtf" }));
-        picker.FileTypeChoices().Insert(L"Plain Text", winrt::single_threaded_vector<hstring>({ L".txt" }));
+        picker.FileTypeChoices().Insert(L"Custom XML Document (*.dccx)", winrt::single_threaded_vector<hstring>({ L".dccx" }));
+        picker.FileTypeChoices().Insert(L"Rich Text Format (*.rtf)", winrt::single_threaded_vector<hstring>({ L".rtf" }));
+        picker.FileTypeChoices().Insert(L"Plain Text (*.txt)", winrt::single_threaded_vector<hstring>({ L".txt" }));
         picker.SuggestedStartLocation(PickerLocationId::DocumentsLibrary);
         picker.SuggestedFileName(L"Document");
 
         StorageFile file = co_await picker.PickSaveFileAsync();
         if (file != nullptr)
         {
-            streams::IRandomAccessStream stream = co_await file.OpenAsync(FileAccessMode::ReadWrite);
-            Editor().Document().SaveToStream(TextGetOptions::FormatRtf, stream);
+            if (file.FileType() == L".dccx")
+            {
+                co_await SaveCustomXmlFile(file, false);
+            }
+            else
+            {
+                IRandomAccessStream stream = co_await file.OpenAsync(FileAccessMode::ReadWrite);
+                Editor().Document().SaveToStream(TextGetOptions::FormatRtf, stream);
+            }
+            m_currentFile = file;
+            AddToRecentFiles(file.Path());
+        }
+    }
+
+    IAsyncAction MainWindow::SaveAsTemplate_Click(IInspectable const&, RoutedEventArgs const&)
+    {
+        FileSavePicker picker;
+        picker.as<IInitializeWithWindow>()->Initialize(GetWindowHandle());
+        picker.FileTypeChoices().Insert(L"Custom Document Template (*.dctx)", winrt::single_threaded_vector<hstring>({ L".dctx" }));
+        picker.SuggestedStartLocation(PickerLocationId::DocumentsLibrary);
+        picker.SuggestedFileName(L"Template");
+
+        StorageFile file = co_await picker.PickSaveFileAsync();
+        if (file != nullptr)
+        {
+            co_await SaveCustomXmlFile(file, true);
             m_currentFile = file;
             AddToRecentFiles(file.Path());
         }
@@ -112,16 +249,9 @@ namespace winrt::WordProcessorApp::implementation
         paperSize.Header(box_value(L"Paper Size"));
         paperSize.Items().Append(box_value(L"Letter (8.5 x 11 in)"));
         paperSize.Items().Append(box_value(L"A4 (210 x 297 mm)"));
-        paperSize.Items().Append(box_value(L"Legal (8.5 x 14 in)"));
         paperSize.SelectedIndex(0);
 
-        TextBox margins;
-        margins.Header(box_value(L"Margins (inches)"));
-        margins.Text(L"1.0");
-
         panel.Children().Append(paperSize);
-        panel.Children().Append(margins);
-
         dialog.Content(panel);
         dialog.CloseButtonText(L"OK");
 
@@ -152,7 +282,6 @@ namespace winrt::WordProcessorApp::implementation
 
     IAsyncAction MainWindow::Print_Click(IInspectable const&, RoutedEventArgs const&)
     {
-        // Triggers the system print manager UI contract
         co_await Windows::Graphics::Printing::PrintManager::ShowPrintUIAsync();
     }
 
@@ -183,14 +312,9 @@ namespace winrt::WordProcessorApp::implementation
         locationText.Text(L"Path: " + fileLocation);
         TextBlock statsText;
         statsText.Text(L"Words: " + to_hstring(wordCount) + L"  |  Characters: " + to_hstring(charCount));
-        
-        TextBox authorText;
-        authorText.Header(box_value(L"Author"));
-        authorText.Text(L"WinUI User");
 
         panel.Children().Append(locationText);
         panel.Children().Append(statsText);
-        panel.Children().Append(authorText);
 
         dialog.Content(panel);
         dialog.CloseButtonText(L"Close");
@@ -200,7 +324,6 @@ namespace winrt::WordProcessorApp::implementation
 
     IAsyncAction MainWindow::Send_Click(IInspectable const&, RoutedEventArgs const&)
     {
-        // Opens the default mail provider with the document content pre-filled
         hstring bodyText;
         Editor().Document().GetText(TextGetOptions::None, bodyText);
 
@@ -215,25 +338,15 @@ namespace winrt::WordProcessorApp::implementation
         Application::Current().Exit();
     }
 
-    // --- Recent Files Logic ---
+    // --- Recent Files Management ---
 
     void MainWindow::AddToRecentFiles(hstring const& filePath)
     {
-        // Deduplicate
         auto it = std::find(m_recentFiles.begin(), m_recentFiles.end(), filePath);
-        if (it != m_recentFiles.end())
-        {
-            m_recentFiles.erase(it);
-        }
+        if (it != m_recentFiles.end()) m_recentFiles.erase(it);
 
-        // Insert at head
         m_recentFiles.insert(m_recentFiles.begin(), filePath);
-
-        // Cap size at 4
-        if (m_recentFiles.size() > 4)
-        {
-            m_recentFiles.pop_back();
-        }
+        if (m_recentFiles.size() > 4) m_recentFiles.pop_back();
 
         RefreshRecentFilesMenu();
     }
@@ -259,15 +372,19 @@ namespace winrt::WordProcessorApp::implementation
         try
         {
             StorageFile file = co_await StorageFile::GetFileFromPathAsync(filePath);
-            streams::IRandomAccessStream stream = co_await file.OpenAsync(FileAccessMode::Read);
-            Editor().Document().LoadFromStream(TextSetOptions::FormatRtf, stream);
-            m_currentFile = file;
-            Editor().IsEnabled(true);
+            if (file.FileType() == L".dccx" || file.FileType() == L".dctx")
+            {
+                co_await LoadCustomXmlFile(file, false);
+            }
+            else
+            {
+                IRandomAccessStream stream = co_await file.OpenAsync(FileAccessMode::Read);
+                Editor().Document().LoadFromStream(TextSetOptions::FormatRtf, stream);
+                m_currentFile = file;
+                Editor().IsEnabled(true);
+            }
         }
-        catch (...)
-        {
-            // File may have been moved or deleted
-        }
+        catch (...) {}
     }
 
     // --- Formatting Logic ---
