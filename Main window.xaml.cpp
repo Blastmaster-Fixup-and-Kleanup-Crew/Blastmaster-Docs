@@ -155,4 +155,25 @@ namespace winrt::WinUI3TextEditor::implementation
 
         StatusText().Text(L"Tools Action: " + action);
     }
+
+    void MainWindow::OnTableItemClick(IInspectable const& sender, RoutedEventArgs const&)
+    {
+        auto item = sender.as<MenuFlyoutItem>();
+        hstring action = item.Text();
+
+        StatusText().Text(L"Table Action: " + action);
+    }
+
+    void MainWindow::OnToggleGridlinesClick(IInspectable const&, RoutedEventArgs const&)
+    {
+        bool showGridlines = GridlinesToggle().IsChecked();
+        if (showGridlines)
+        {
+            StatusText().Text(L"Table Gridlines: Visible");
+        }
+        else
+        {
+            StatusText().Text(L"Table Gridlines: Hidden");
+        }
+    }
 }
