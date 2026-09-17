@@ -176,4 +176,20 @@ namespace winrt::WinUI3TextEditor::implementation
             StatusText().Text(L"Table Gridlines: Hidden");
         }
     }
+
+    void MainWindow::OnWindowItemClick(IInspectable const& sender, RoutedEventArgs const&)
+    {
+        auto item = sender.as<MenuFlyoutItem>();
+        hstring action = item.Text();
+
+        StatusText().Text(L"Window Action: " + action);
+    }
+
+    void MainWindow::OnSwitchDocumentClick(IInspectable const& sender, RoutedEventArgs const&)
+    {
+        auto item = sender.as<RadioMenuFlyoutItem>();
+        hstring docName = item.Text();
+
+        StatusText().Text(L"Switched to Document: " + docName);
+    }
 }
