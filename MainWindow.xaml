@@ -244,9 +244,23 @@
 
                 <MenuFlyoutSeparator/>
 
-                <!-- Open Document List -->
                 <RadioMenuFlyoutItem Text="1 Document1" GroupName="OpenDocuments" IsChecked="True" Click="OnSwitchDocumentClick"/>
                 <RadioMenuFlyoutItem Text="2 Document2" GroupName="OpenDocuments" Click="OnSwitchDocumentClick"/>
+            </MenuBarItem>
+
+            <!-- HELP MENU -->
+            <MenuBarItem Title="Help">
+                <MenuFlyoutItem Text="Blastmaster Docs Help Topics" Click="OnHelpItemClick">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="F1"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Answer Wizard..." Click="OnHelpItemClick"/>
+                <MenuFlyoutItem Text="Microsoft Word Help..." Click="OnHelpItemClick"/>
+
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="About Blastmaster Docs" Click="OnHelpItemClick"/>
             </MenuBarItem>
         </MenuBar>
 
