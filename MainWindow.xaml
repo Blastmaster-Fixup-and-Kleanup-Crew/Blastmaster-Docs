@@ -16,11 +16,12 @@
         <!-- Top Menu Bar -->
         <MenuBar Grid.Row="0">
             <MenuBarItem Title="File">
-                <MenuFlyoutItem Text="New" Click="New_Click">
+                <MenuFlyoutItem Text="New Document" Click="New_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Key="N" Modifiers="Control"/>
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
+                <MenuFlyoutItem Text="New from Template (.dctx)..." Click="NewFromTemplate_Click"/>
                 <MenuFlyoutItem Text="Open..." Click="Open_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Key="O" Modifiers="Control"/>
@@ -33,7 +34,8 @@
                         <KeyboardAccelerator Key="S" Modifiers="Control"/>
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
-                <MenuFlyoutItem Text="Save As..." Click="SaveAs_Click"/>
+                <MenuFlyoutItem Text="Save As Document (.dccx)..." Click="SaveAs_Click"/>
+                <MenuFlyoutItem Text="Save As Template (.dctx)..." Click="SaveAsTemplate_Click"/>
                 <MenuFlyoutSeparator/>
                 <MenuFlyoutItem Text="Page Setup..." Click="PageSetup_Click"/>
                 <MenuFlyoutItem Text="Print Preview..." Click="PrintPreview_Click"/>
@@ -46,7 +48,6 @@
                 <MenuFlyoutItem Text="Properties..." Click="Properties_Click"/>
                 <MenuFlyoutItem Text="Send..." Click="Send_Click"/>
                 <MenuFlyoutSeparator/>
-                <!-- Recent Files Submenu -->
                 <MenuFlyoutSubItem x:Name="RecentFilesMenu" Text="Recent Files">
                     <MenuFlyoutItem Text="No Recent Files" IsEnabled="False"/>
                 </MenuFlyoutSubItem>
@@ -65,7 +66,7 @@
             <AppBarButton Icon="FontDecrease" Label="Decrease Size" Click="FontSizeDecrease_Click"/>
         </CommandBar>
 
-        <!-- Main Document Area -->
+        <!-- Main Editor -->
         <RichEditBox x:Name="Editor" 
                      Grid.Row="2" 
                      Margin="10" 
