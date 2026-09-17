@@ -25,5 +25,6 @@ namespace WinUI3TextEditor
         void OnDrawingToolbarButtonClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
         void OnFormattingToolbarButtonClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
         void OnFormattingComboBoxChanged(IInspectable sender, Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs e);
+        void OnFormsToolbarButtonClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
     }
 }
