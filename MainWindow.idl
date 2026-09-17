@@ -22,5 +22,6 @@ namespace WinUI3TextEditor
         void OnHelpItemClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
         void OnStandardToolbarButtonClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
         void OnZoomComboBoxChanged(IInspectable sender, Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs e);
+        void OnDrawingToolbarButtonClick(IInspectable sender, Microsoft.UI.Xaml.RoutedEventArgs e);
     }
 }
