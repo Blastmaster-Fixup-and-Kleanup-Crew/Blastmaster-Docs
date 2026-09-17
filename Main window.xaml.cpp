@@ -5,6 +5,7 @@
 #endif
 
 #include <microsoft.ui.xaml.window.h>
+#include <winrt/Windows.ApplicationModel.DataTransfer.h>
 #include <winrt/Windows.Data.Xml.Dom.h>
 #include <winrt/Windows.Graphics.Printing.h>
 #include <winrt/Windows.Storage.Pickers.h>
@@ -16,6 +17,7 @@ using namespace winrt;
 using namespace Microsoft::UI::Xaml;
 using namespace Microsoft::UI::Xaml::Controls;
 using namespace Microsoft::UI::Text;
+using namespace Windows::ApplicationModel::DataTransfer;
 using namespace Windows::Data::Xml::Dom;
 using namespace Windows::Storage;
 using namespace Windows::Storage::Pickers;
@@ -36,19 +38,312 @@ namespace winrt::WordProcessorApp::implementation
         return hwnd;
     }
 
+    // --- Edit Menu Implementations ---
+
+    void MainWindow::Undo_Click(IInspectable const&, RoutedEventArgs const&)
+    {
+        if (Editor().Document().CanUndo())
+        {
+            Editor().Document().Undo();
+        }
+    }
+
+    void MainWindow::Redo_Click(IInspectable const&, RoutedEventArgs const&)
+    {
+        if (Editor().Document().CanRedo())
+        {
+            Editor().Document().Redo();
+        }
+    }
+
+    void MainWindow::Cut_Click(IInspectable const&, RoutedEventArgs const&)
+    {
+        Editor().Document().Selection().Cut();
+    }
+
+    void MainWindow::Copy_Click(IInspectable const&, RoutedEventArgs const&)
+    {
+        Editor().Document().Selection().Copy();
+    }
+
+    void MainWindow::Paste_Click(IInspectable const&, RoutedEventArgs const&)
+    {
+        Editor().Document().Selection().Paste(0);
+    }
+
+    IAsyncAction MainWindow::PasteSpecial_Click(IInspectable const&, RoutedEventArgs const&)
+    {
+        ContentDialog dialog;
+        dialog.XamlRoot(Content().XamlRoot());
+        dialog.Title(box_value(L"Paste Special"));
+
+        StackPanel panel;
+        panel.Spacing(10);
+
+        RadioButton rtfOption;
+        rtfOption.Content(box_value(L"Formatted Text (RTF)"));
+        rtfOption.IsChecked(true);
+
+        RadioButton unformattedOption;
+        unformattedOption.Content(box_value(L"Unformatted Text"));
+
+        RadioButton unicodeOption;
+        unicodeOption.Content(box_value(L"Unicode Text"));
+
+        panel.Children().Append(rtfOption);
+        panel.Children().Append(unformattedOption);
+        panel.Children().Append(unicodeOption);
+
+        dialog.Content(panel);
+        dialog.PrimaryButtonText(L"Paste");
+        dialog.CloseButtonText(L"Cancel");
+
+        ContentDialogResult result = co_await dialog.ShowAsync();
+        if (result == ContentDialogResult::Primary)
+        {
+            if (unformattedOption.IsChecked().Value())
+            {
+                // Retrieve unformatted plain text from Clipboard
+                DataPackageView dataPackage = Clipboard::GetContent();
+                if (dataPackage.Contains(StandardDataFormats::Text()))
+                {
+                    hstring text = co_await dataPackage.GetTextAsync();
+                    Editor().Document().Selection().SetText(TextSetOptions::None, text);
+                }
+            }
+            else
+            {
+                Editor().Document().Selection().Paste(0);
+            }
+        }
+    }
+
+    void MainWindow::Clear_Click(IInspectable const&, RoutedEventArgs const&)
+    {
+        Editor().Document().Selection().SetText(TextSetOptions::None, L"");
+    }
+
+    void MainWindow::SelectAll_Click(IInspectable const&, RoutedEventArgs const&)
+    {
+        ITextRange range = Editor().Document().GetRange(0, c_hkTextMax);
+        Editor().Document().Selection().SetRange(0, c_hkTextMax);
+    }
+
+    IAsyncAction MainWindow::Find_Click(IInspectable const&, RoutedEventArgs const&)
+    {
+        ContentDialog dialog;
+        dialog.XamlRoot(Content().XamlRoot());
+        dialog.Title(box_value(L"Find"));
+
+        TextBox findInput;
+        findInput.Header(box_value(L"Find what:"));
+        findInput.PlaceholderText(L"Enter search text...");
+
+        dialog.Content(findInput);
+        dialog.PrimaryButtonText(L"Find Next");
+        dialog.CloseButtonText(L"Cancel");
+
+        ContentDialogResult result = co_await dialog.ShowAsync();
+        if (result == ContentDialogResult::Primary && !findInput.Text().empty())
+        {
+            ITextRange range = Editor().Document().GetRange(0, 0);
+            int32_t found = range.FindText(findInput.Text(), c_hkTextMax, FindOptions::None);
+            if (found > 0)
+            {
+                Editor().Document().Selection().SetRange(range.StartPosition(), range.EndPosition());
+            }
+        }
+    }
+
+    IAsyncAction MainWindow::Replace_Click(IInspectable const&, RoutedEventArgs const&)
+    {
+        ContentDialog dialog;
+        dialog.XamlRoot(Content().XamlRoot());
+        dialog.Title(box_value(L"Find and Replace"));
+
+        StackPanel panel;
+        panel.Spacing(10);
+
+        TextBox findInput;
+        findInput.Header(box_value(L"Find what:"));
+
+        TextBox replaceInput;
+        replaceInput.Header(box_value(L"Replace with:"));
+
+        panel.Children().Append(findInput);
+        panel.Children().Append(replaceInput);
+
+        dialog.Content(panel);
+        dialog.PrimaryButtonText(L"Replace All");
+        dialog.CloseButtonText(L"Cancel");
+
+        ContentDialogResult result = co_await dialog.ShowAsync();
+        if (result == ContentDialogResult::Primary && !findInput.Text().empty())
+        {
+            ITextRange range = Editor().Document().GetRange(0, c_hkTextMax);
+            hstring text;
+            range.GetText(TextGetOptions::None, text);
+
+            std::wstring str(text.c_str());
+            std::wstring from(findInput.Text().c_str());
+            std::wstring to(replaceInput.Text().c_str());
+
+            size_t start_pos = 0;
+            while ((start_pos = str.find(from, start_pos)) != std::wstring::npos)
+            {
+                str.replace(start_pos, from.length(), to);
+                start_pos += to.length();
+            }
+
+            Editor().Document().SetText(TextSetOptions::None, hstring(str));
+        }
+    }
+
+    IAsyncAction MainWindow::GoTo_Click(IInspectable const&, RoutedEventArgs const&)
+    {
+        ContentDialog dialog;
+        dialog.XamlRoot(Content().XamlRoot());
+        dialog.Title(box_value(L"Go To"));
+
+        TextBox lineInput;
+        lineInput.Header(box_value(L"Enter line number:"));
+        lineInput.Text(L"1");
+
+        dialog.Content(lineInput);
+        dialog.PrimaryButtonText(L"Go To");
+        dialog.CloseButtonText(L"Cancel");
+
+        ContentDialogResult result = co_await dialog.ShowAsync();
+        if (result == ContentDialogResult::Primary)
+        {
+            int lineNum = std::wcstol(lineInput.Text().c_str(), nullptr, 10);
+            ITextRange range = Editor().Document().GetRange(0, 0);
+            range.Move(TextRangeUnit::Line, lineNum - 1);
+            Editor().Document().Selection().SetRange(range.StartPosition(), range.StartPosition());
+        }
+    }
+
+    IAsyncAction MainWindow::AutoText_Click(IInspectable const&, RoutedEventArgs const&)
+    {
+        ContentDialog dialog;
+        dialog.XamlRoot(Content().XamlRoot());
+        dialog.Title(box_value(L"AutoText Entries"));
+
+        ListView listView;
+        listView.Items().Append(box_value(L"Sincerely,"));
+        listView.Items().Append(box_value(L"Thank you for your business."));
+        listView.Items().Append(box_value(L"Confidential Document"));
+        listView.SelectedIndex(0);
+
+        dialog.Content(listView);
+        dialog.PrimaryButtonText(L"Insert");
+        dialog.CloseButtonText(L"Cancel");
+
+        ContentDialogResult result = co_await dialog.ShowAsync();
+        if (result == ContentDialogResult::Primary && listView.SelectedItem() != nullptr)
+        {
+            hstring autoText = unbox_value<hstring>(listView.SelectedItem());
+            Editor().Document().Selection().SetText(TextSetOptions::None, autoText);
+        }
+    }
+
+    IAsyncAction MainWindow::Bookmark_Click(IInspectable const&, RoutedEventArgs const&)
+    {
+        ContentDialog dialog;
+        dialog.XamlRoot(Content().XamlRoot());
+        dialog.Title(box_value(L"Bookmarks"));
+
+        StackPanel panel;
+        panel.Spacing(10);
+
+        TextBox nameInput;
+        nameInput.Header(box_value(L"Bookmark Name:"));
+
+        ListView listView;
+        for (auto const& [name, pos] : m_bookmarks)
+        {
+            listView.Items().Append(box_value(name));
+        }
+
+        panel.Children().Append(nameInput);
+        panel.Children().Append(listView);
+
+        dialog.Content(panel);
+        dialog.PrimaryButtonText(L"Add");
+        dialog.SecondaryButtonText(L"Go To");
+        dialog.CloseButtonText(L"Close");
+
+        ContentDialogResult result = co_await dialog.ShowAsync();
+        if (result == ContentDialogResult::Primary && !nameInput.Text().empty())
+        {
+            int32_t pos = Editor().Document().Selection().StartPosition();
+            m_bookmarks[nameInput.Text()] = pos;
+        }
+        else if (result == ContentDialogResult::Secondary && listView.SelectedItem() != nullptr)
+        {
+            hstring selectedName = unbox_value<hstring>(listView.SelectedItem());
+            if (m_bookmarks.find(selectedName) != m_bookmarks.end())
+            {
+                int32_t pos = m_bookmarks[selectedName];
+                Editor().Document().Selection().SetRange(pos, pos);
+            }
+        }
+    }
+
+    IAsyncAction MainWindow::Links_Click(IInspectable const&, RoutedEventArgs const&)
+    {
+        ContentDialog dialog;
+        dialog.XamlRoot(Content().XamlRoot());
+        dialog.Title(box_value(L"Edit Links"));
+
+        TextBlock desc;
+        desc.Text(L"Manage linked external objects and dynamic files.");
+
+        ListView listView;
+        listView.Items().Append(box_value(L"C:\\Data\\ChartData.xlsx (Excel.Sheet) - Automatic Update"));
+
+        StackPanel panel;
+        panel.Spacing(10);
+        panel.Children().Append(desc);
+        panel.Children().Append(listView);
+
+        dialog.Content(panel);
+        dialog.PrimaryButtonText(L"Update Now");
+        dialog.CloseButtonText(L"Close");
+
+        co_await dialog.ShowAsync();
+    }
+
+    IAsyncAction MainWindow::Object_Click(IInspectable const&, RoutedEventArgs const&)
+    {
+        ContentDialog dialog;
+        dialog.XamlRoot(Content().XamlRoot());
+        dialog.Title(box_value(L"Insert Object"));
+
+        ListBox typeList;
+        typeList.Items().Append(box_value(L"Bitmap Image"));
+        typeList.Items().Append(box_value(L"Graph Chart"));
+        typeList.Items().Append(box_value(L"PDF Document"));
+        typeList.SelectedIndex(0);
+
+        dialog.Content(typeList);
+        dialog.PrimaryButtonText(L"Insert");
+        dialog.CloseButtonText(L"Cancel");
+
+        co_await dialog.ShowAsync();
+    }
+
     // --- XML Serialization and Deserialization (.dccx / .dctx) ---
 
     IAsyncAction MainWindow::SaveCustomXmlFile(StorageFile const& file, bool isTemplate)
     {
-        // 1. Extract Rich Text payload
         InMemoryRandomAccessStream memoryStream;
         Editor().Document().SaveToStream(TextGetOptions::FormatRtf, memoryStream);
-        
+
         DataReader reader(memoryStream.GetInputStreamAt(0));
         co_await reader.LoadAsync(static_cast<uint32_t>(memoryStream.Size()));
         hstring rtfContent = reader.ReadString(reader.UnconsumedBufferLength());
 
-        // 2. Build XML DOM Structure
         XmlDocument doc;
         hstring rootTag = isTemplate ? L"DocumentTemplate" : L"Document";
         hstring rootNs = isTemplate ? L"http://schemas.dccx.org/2026/template" : L"http://schemas.dccx.org/2026/document";
@@ -58,29 +353,18 @@ namespace winrt::WordProcessorApp::implementation
         root.SetAttribute(L"Version", L"1.0");
         doc.AppendChild(root);
 
-        // Metadata Properties
         XmlElement props = doc.CreateElement(L"Properties");
         XmlElement title = doc.CreateElement(L"Title");
         title.InnerText(file.DisplayName());
         props.AppendChild(title);
         root.AppendChild(props);
 
-        // Page Layout
-        XmlElement pageSetup = doc.CreateElement(L"PageSetup");
-        pageSetup.SetAttribute(L"Size", L"Letter");
-        pageSetup.SetAttribute(L"Orientation", L"Portrait");
-        root.AppendChild(pageSetup);
-
-        // Body Content encapsulating RTF CDATA
         XmlElement body = doc.CreateElement(isTemplate ? L"InitialContent" : L"Body");
         XmlElement rtfNode = doc.CreateElement(L"RtfContent");
-        
-        // Append raw RTF text within node
         rtfNode.InnerText(rtfContent);
         body.AppendChild(rtfNode);
         root.AppendChild(body);
 
-        // 3. Write XML output stream
         co_await FileIO::WriteTextAsync(file, doc.GetXml());
     }
 
@@ -112,14 +396,13 @@ namespace winrt::WordProcessorApp::implementation
         }
         else
         {
-            // If initialized from a template, treat as an unsaved new document
             m_currentFile = nullptr;
         }
 
         Editor().IsEnabled(true);
     }
 
-    // --- File Menu Handlers ---
+    // --- File Menu Commands ---
 
     void MainWindow::New_Click(IInspectable const&, RoutedEventArgs const&)
     {
@@ -293,7 +576,7 @@ namespace winrt::WordProcessorApp::implementation
 
         hstring docText;
         Editor().Document().GetText(TextGetOptions::None, docText);
-        
+
         uint32_t charCount = docText.size();
         uint32_t wordCount = 0;
         bool inWord = false;
